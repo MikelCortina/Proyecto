@@ -1,7 +1,0 @@
-C:/Proyecto/build/CMakeFiles/LANGUAGES.dir
-C:/Proyecto/build/CMakeFiles/glad.dir
-C:/Proyecto/build/CMakeFiles/ALL_BUILD.dir
-C:/Proyecto/build/CMakeFiles/ZERO_CHECK.dir
-C:/Proyecto/build/external/glfw/CMakeFiles/ALL_BUILD.dir
-C:/Proyecto/build/external/glfw/src/CMakeFiles/glfw.dir
-C:/Proyecto/build/external/glfw/src/CMakeFiles/update_mappings.dir

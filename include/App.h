@@ -1,9 +1,11 @@
-
 #pragma once
 
 #include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "Camera.h"
+#include "shaderClass.h"
 
 // Forward declarations
 class Texture;
@@ -24,13 +26,13 @@ private:
     void mainLoop();
     void cleanup();
 
-    std::string loadShaderSource(const std::string& filepath);
-
-    // Estado ventana / GL
+    // Ventana
     int width = 800;
     int height = 600;
     GLFWwindow* window = nullptr;
-    GLuint shaderProgram = 0;
+
+    // Shader
+    Shader* shader = nullptr;
 
     // Geometría
     VAO* vao = nullptr;
@@ -39,10 +41,10 @@ private:
 
     // Recursos
     Texture* textureObj = nullptr;
-    std::string vertexShaderSource;
-    std::string fragmentShaderSource;
 
-    // Animación
-    float rotation = 0.0f;
+    // Cámara
+    Camera camera;
+
+    // Tiempo
     double prevTime = 0.0;
 };

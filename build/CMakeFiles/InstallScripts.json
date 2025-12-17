@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Proyecto/build/cmake_install.cmake",
-		"C:/Proyecto/build/external/glfw/cmake_install.cmake",
-		"C:/Proyecto/build/external/glfw/src/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
