@@ -1,0 +1,4 @@
+# CMake generation dependency list for this directory.
+C:/Proyecto/build/CMakeFiles/cmake.verify_globs
+C:/Proyecto/external/glfw/CMake/glfw3.pc.in
+C:/Proyecto/external/glfw/src/CMakeLists.txt

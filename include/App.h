@@ -1,38 +1,48 @@
+
 #pragma once
+
+#include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <string>
-#include "Texture.h" // <--- esto es obligatorio para declarar Texture*
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
+// Forward declarations
+class Texture;
+class VAO;
+class VBO;
+class EBO;
 
 class App {
 public:
     App();
     ~App();
+
     void run();
 
 private:
-    GLFWwindow* window = nullptr;
-
     void init();
+    void CreateGeometry();
     void mainLoop();
     void cleanup();
+
     std::string loadShaderSource(const std::string& filepath);
-    void CreateVBO();
 
-	const unsigned int width = 800;
-	const unsigned int height = 600;
+    // Estado ventana / GL
+    int width = 800;
+    int height = 600;
+    GLFWwindow* window = nullptr;
+    GLuint shaderProgram = 0;
 
+    // Geometría
+    VAO* vao = nullptr;
+    VBO* vbo = nullptr;
+    EBO* ebo = nullptr;
+
+    // Recursos
+    Texture* textureObj = nullptr;
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
-    unsigned int VBO = 0, VAO = 0, shaderProgram = 0, EBO = 0;
 
-    Texture* textureObj = nullptr;  // puntero a la textura
-
-	float rotation = 0.0f;
-	double prevTime = 0.0f;
-
+    // Animación
+    float rotation = 0.0f;
+    double prevTime = 0.0;
 };
