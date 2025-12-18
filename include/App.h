@@ -50,6 +50,8 @@ private:
 
     // ---------- TEXTURE ----------
     Texture* textureObj = nullptr;
+    Texture* textureSpec = nullptr;     // Nueva: specular map (o roughness, etc.)
+    
 
     float prevTime = 0.0f;
 };

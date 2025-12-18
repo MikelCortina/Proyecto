@@ -44,24 +44,21 @@ void App::init() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     // ---------- SHADERS ----------
-    shader = new Shader(
-        "../shaders/basic.vs",
-        "../shaders/basic.fs"
-    );
 
-    lightShader = new Shader(
-        "../shaders/light.vs",
-        "../shaders/light.fs"
-    );
+    shader = new Shader( "../shaders/basic.vs","../shaders/basic.fs" );
+
+    lightShader = new Shader("../shaders/light.vs","../shaders/light.fs");
 
     shader->Activate();
     glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shader->ID, "texture2"), 1);     // Specular en unidad 1
 
     // ---------- GEOMETRY ----------
     CreateGeometry();
 
     // ---------- TEXTURE ----------
-    textureObj = new Texture("../textures/Textura1.png");
+    textureObj = new Texture("../textures/planks.png");
+    textureSpec = new Texture("../textures/planksSpec.png");  // Cambia por tu mapa specular
 
     prevTime = glfwGetTime();
 
@@ -71,40 +68,20 @@ void App::init() {
 
 void App::CreateGeometry() {
 
- // Vertices coordinates
+    // Vertices coordinates
     GLfloat vertices[] =
-    { //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-        -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-        -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-         0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-         0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-
-        -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-        -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-
-        -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-         0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-
-         0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-         0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
-
-         0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-        -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
+    { //     COORDINATES     /        COLORS        /    TexCoord    /       NORMALS     //
+        -1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+        -1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+         1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+         1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
     };
 
     // Indices for vertices order
     GLuint indices[] =
     {
-        0, 1, 2, // Bottom side
-        0, 2, 3, // Bottom side
-        4, 6, 5, // Left side
-        7, 9, 8, // Non-facing side
-        10, 12, 11, // Right side
-        13, 15, 14 // Facing side
+        0, 1, 2,
+        0, 2, 3
     };
 
     GLfloat lightVertices[] =
@@ -134,6 +111,7 @@ void App::CreateGeometry() {
         4, 5, 6,
         4, 6, 7
     };
+
 
     vao = new VAO();
     vao->Bind();
@@ -201,6 +179,7 @@ void App::mainLoop() {
         camera.Matrix(*shader, "camMatrix");
 
         textureObj->bind(0);
+		textureSpec->bind(1);  // Bind del mapa specular en la unidad 1
         vao->Bind();
         glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
       
