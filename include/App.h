@@ -1,17 +1,14 @@
 #pragma once
 
-#include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Camera.h"
 #include "shaderClass.h"
-
-// Forward declarations
-class Texture;
-class VAO;
-class VBO;
-class EBO;
+#include "Camera.h"
+#include "Texture.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
 
 class App {
 public:
@@ -22,29 +19,37 @@ public:
 
 private:
     void init();
-    void CreateGeometry();
     void mainLoop();
     void cleanup();
 
-    // Ventana
-    int width = 800;
-    int height = 600;
+    void CreateGeometry();
+
     GLFWwindow* window = nullptr;
 
-    // Shader
-    Shader* shader = nullptr;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
 
-    // Geometría
+    Camera camera;
+
+    // ---------- SHADERS ----------
+    Shader* shader = nullptr;
+    Shader* lightShader = nullptr;
+
+    // ---------- PYRAMID ----------
     VAO* vao = nullptr;
     VBO* vbo = nullptr;
     EBO* ebo = nullptr;
 
-    // Recursos
+    // ---------- LIGHT ----------
+    VAO* lightVAO = nullptr;
+    VBO* lightVBO = nullptr;
+    EBO* lightEBO = nullptr;
+    GLuint lightIndexCount = 0;
+
+    glm::vec3 lightPos;
+
+    // ---------- TEXTURE ----------
     Texture* textureObj = nullptr;
 
-    // Cámara
-    Camera camera;
-
-    // Tiempo
-    double prevTime = 0.0;
+    float prevTime = 0.0f;
 };
