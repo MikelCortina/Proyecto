@@ -1,5 +1,6 @@
 ﻿#include "App.h"
 
+
 #include <iostream>
 #include <cstdlib>
 
@@ -43,38 +44,26 @@ void App::init() {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-    // ---------- SHADERS ----------
-
-    shader = new Shader( "../shaders/basic.vs","../shaders/basic.fs" );
-
-    lightShader = new Shader("../shaders/light.vs","../shaders/light.fs");
-
-    shader->Activate();
-    glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shader->ID, "texture2"), 1);     // Specular en unidad 1
-
+ 
     // ---------- GEOMETRY ----------
     CreateGeometry();
 
-    // ---------- TEXTURE ----------
-    textureObj = new Texture("../textures/planks.png");
-    textureSpec = new Texture("../textures/planksSpec.png");  // Cambia por tu mapa specular
-
+  
+ 
     prevTime = glfwGetTime();
 
-    // ---------- LIGHT ----------
-    lightPos = glm::vec3(0.2f, -1.5f, 0.2f);
 }
+
 
 void App::CreateGeometry() {
 
     // Vertices coordinates
-    GLfloat vertices[] =
-    { //     COORDINATES     /        COLORS        /    TexCoord    /       NORMALS     //
-        -1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-        -1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-         1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-         1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+    Vertex vertices[] =
+    { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+        Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+        Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+        Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+        Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
     };
 
     // Indices for vertices order
@@ -84,16 +73,16 @@ void App::CreateGeometry() {
         0, 2, 3
     };
 
-    GLfloat lightVertices[] =
+    Vertex lightVertices[] =
     { //     COORDINATES     //
-        -0.1f, -0.1f,  0.1f,
-        -0.1f, -0.1f, -0.1f,
-         0.1f, -0.1f, -0.1f,
-         0.1f, -0.1f,  0.1f,
-        -0.1f,  0.1f,  0.1f,
-        -0.1f,  0.1f, -0.1f,
-         0.1f,  0.1f, -0.1f,
-         0.1f,  0.1f,  0.1f
+        Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+        Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+        Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+        Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+        Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+        Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+        Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+        Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
     };
 
     GLuint lightIndices[] =
@@ -112,31 +101,43 @@ void App::CreateGeometry() {
         4, 6, 7
     };
 
+    // ---------- TEXTURE ----------
 
-    vao = new VAO();
-    vao->Bind();
+       Texture textures[]
+    {
+        Texture("../textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+        Texture("../textures/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+    };
 
-    vbo = new VBO(vertices, sizeof(vertices));
-    ebo = new EBO(indices, sizeof(indices));
+       // ---------- SHADERS ----------
 
-    vao->LinkVBO(*vbo, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-    vao->LinkVBO(*vbo, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-    vao->LinkVBO(*vbo, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-    vao->LinkVBO(*vbo, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+       shader = new Shader("../shaders/basic.vs", "../shaders/basic.fs");
 
-    vao->Unbind();
+     
 
-    lightIndexCount = sizeof(lightIndices) / sizeof(GLuint);
+       shader->Activate();
 
-    lightVAO = new VAO();
-    lightVAO->Bind();
+       glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
+       glUniform1i(glGetUniformLocation(shader->ID, "texture2"), 1);     // Specular en unidad 1
 
-    lightVBO = new VBO(lightVertices, sizeof(lightVertices));
-    lightEBO = new EBO(lightIndices, sizeof(lightIndices));
 
-    lightVAO->LinkVBO(*lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
 
-    lightVAO->Unbind();
+	std::vector<Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector<GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+    floor = new Mesh(verts, ind, tex);  // Asignas al puntero miembro
+  
+
+
+    lightShader = new Shader("../shaders/light.vs", "../shaders/light.fs");
+
+	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+
+    light = new Mesh(lightVerts, lightInd, tex);
+
+
 
     // ---------- COLOR ----------
    
@@ -173,22 +174,8 @@ void App::mainLoop() {
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        // ---------- PYRAMID ----------
-        shader->Activate();
-		glUniform3f(glGetUniformLocation(shader->ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-        camera.Matrix(*shader, "camMatrix");
-
-        textureObj->bind(0);
-		textureSpec->bind(1);  // Bind del mapa specular en la unidad 1
-        vao->Bind();
-        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
-      
-
-        // ---------- LIGHT ----------
-        lightShader->Activate();
-        camera.Matrix(*lightShader, "camMatrix");
-        lightVAO->Bind();
-        glDrawElements(GL_TRIANGLES, lightIndexCount, GL_UNSIGNED_INT, 0);
+        floor->Draw(*shader, camera);
+        light->Draw(*lightShader, camera);
       
 
         glfwSwapBuffers(window);
@@ -200,13 +187,6 @@ void App::cleanup() {
     if (shader) { shader->Delete(); delete shader; }
     if (lightShader) { lightShader->Delete(); delete lightShader; }
 
-    if (ebo) { ebo->Delete(); delete ebo; }
-    if (vbo) { vbo->Delete(); delete vbo; }
-    if (vao) { vao->Delete(); delete vao; }
-
-    if (lightEBO) { lightEBO->Delete(); delete lightEBO; }
-    if (lightVBO) { lightVBO->Delete(); delete lightVBO; }
-    if (lightVAO) { lightVAO->Delete(); delete lightVAO; }
 
     delete textureObj;
 

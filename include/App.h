@@ -9,6 +9,7 @@
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
+#include "Mesh.h"
 
 class App {
 public:
@@ -51,6 +52,9 @@ private:
     // ---------- TEXTURE ----------
     Texture* textureObj = nullptr;
     Texture* textureSpec = nullptr;     // Nueva: specular map (o roughness, etc.)
+
+	Mesh* floor = nullptr;
+	Mesh* light = nullptr;
     
 
     float prevTime = 0.0f;
