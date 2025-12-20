@@ -47,9 +47,8 @@ void App::init() {
  
     // ---------- GEOMETRY ----------
     CreateGeometry();
+    std::cout << "Mesh count: " << model->meshes.size() << "\n";
 
-  
- 
     prevTime = glfwGetTime();
 
 }
@@ -57,23 +56,7 @@ void App::init() {
 
 void App::CreateGeometry() {
 
-    // Vertices coordinates
-    Vertex vertices[] =
-    { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-        Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-        Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-        Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-        Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
-    };
-
-    // Indices for vertices order
-    GLuint indices[] =
-    {
-        0, 1, 2,
-        0, 2, 3
-    };
-
-    Vertex lightVertices[] =
+     Vertex lightVertices[] =
     { //     COORDINATES     //
         Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
         Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
@@ -101,65 +84,31 @@ void App::CreateGeometry() {
         4, 6, 7
     };
 
-    // ---------- TEXTURE ----------
-
-       Texture textures[]
-    {
-        Texture("../textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
-        Texture("../textures/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
-    };
-
        // ---------- SHADERS ----------
 
        shader = new Shader("../shaders/basic.vs", "../shaders/basic.fs");
 
-     
-
-       shader->Activate();
-
-       glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
-       glUniform1i(glGetUniformLocation(shader->ID, "texture2"), 1);     // Specular en unidad 1
-
-
-
-	std::vector<Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-	std::vector<GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
-	std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    floor = new Mesh(verts, ind, tex);  // Asignas al puntero miembro
-  
-
-
-    lightShader = new Shader("../shaders/light.vs", "../shaders/light.fs");
-
-	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
-	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
-
-    light = new Mesh(lightVerts, lightInd, tex);
+      
 
 
 
     // ---------- COLOR ----------
-   
-
+ 
     glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.2f, 1.5f, 0.2f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
     
-
-    glm::mat4 pyramidModel = glm::mat4(1.0f);
-
-    lightShader->Activate();
-
-    glUniformMatrix4fv(glGetUniformLocation(lightShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-    glUniform4f(glGetUniformLocation(lightShader->ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-
     shader->Activate();
 
-    glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
     glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
     glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+    glEnable(GL_DEPTH_TEST);
+    // Cargar modelo glTF
+    model = new Model("../models/sword/scene.gltf");
+   
+
 
 }
 
@@ -174,9 +123,9 @@ void App::mainLoop() {
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        floor->Draw(*shader, camera);
-        light->Draw(*lightShader, camera);
-      
+        if (model)
+            model->Draw(*shader, camera);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();

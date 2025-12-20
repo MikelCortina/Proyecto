@@ -10,6 +10,7 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "Mesh.h"
+#include "Model.h"
 
 class App {
 public:
@@ -55,6 +56,9 @@ private:
 
 	Mesh* floor = nullptr;
 	Mesh* light = nullptr;
+
+	Model* model = nullptr;
+	Model* model2 = nullptr;
     
 
     float prevTime = 0.0f;
