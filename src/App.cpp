@@ -42,8 +42,9 @@ void App::init() {
 
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glClearColor(0.85f, 0.85f, 0.90f, 1.0f);
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glClearColor(0.1f, 0.1, 0.1f, 1.0f);
 
  
     // ---------- GEOMETRY ----------
@@ -88,6 +89,7 @@ void App::CreateGeometry() {
        // ---------- SHADERS ----------
 
        shader = new Shader("../shaders/basic.vs", "../shaders/basic.fs");
+	   outliningShader = new Shader("../shaders/outlining.vs", "../shaders/outlining.fs");
 
       
 
@@ -105,10 +107,10 @@ void App::CreateGeometry() {
     glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
     glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-    glEnable(GL_DEPTH_TEST);
     // Cargar modelo glTF
-    model = new Model("../models/ground/scene.gltf");
-    model2 = new Model("../models/trees/scene.gltf");
+    model = new Model("../models/crow/scene.gltf");
+	model2 = new Model("../models/crow-outline/scene.gltf");
+  
    
 
 
@@ -120,16 +122,29 @@ void App::run() {
 
 void App::mainLoop() {
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 5000.0f);
 
+		glStencilFunc(GL_ALWAYS, 1, 0xFF); // Set any stencil to 1
+		glStencilMask(0xFF); // Write to stencil buffer
+
         if (model)
             model->Draw(*shader, camera);
-		if (model2)
-			model2->Draw(*shader, camera);
+	
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00); // Don't write to stencil buffer
+		glDisable(GL_DEPTH_TEST);
 
+		outliningShader->Activate();
+		glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+		if (model2)
+			model2->Draw(*outliningShader, camera);
+
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 
         glfwSwapBuffers(window);
