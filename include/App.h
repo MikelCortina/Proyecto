@@ -37,6 +37,7 @@ private:
     Shader* shader = nullptr;
     Shader* lightShader = nullptr;
     Shader* outliningShader = nullptr;
+    Shader* grassShader = nullptr;
 
     // ---------- PYRAMID ----------
     VAO* vao = nullptr;
