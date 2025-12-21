@@ -42,7 +42,8 @@ void App::init() {
 
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glDepthFunc(GL_LESS);
+    glClearColor(0.85f, 0.85f, 0.90f, 1.0f);
 
  
     // ---------- GEOMETRY ----------
@@ -106,7 +107,8 @@ void App::CreateGeometry() {
 
     glEnable(GL_DEPTH_TEST);
     // Cargar modelo glTF
-    model = new Model("../models/sword/scene.gltf");
+    model = new Model("../models/ground/scene.gltf");
+    model2 = new Model("../models/trees/scene.gltf");
    
 
 
@@ -121,10 +123,13 @@ void App::mainLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         camera.Inputs(window);
-        camera.updateMatrix(45.0f, 0.1f, 100.0f);
+        camera.updateMatrix(45.0f, 0.1f, 5000.0f);
 
         if (model)
             model->Draw(*shader, camera);
+		if (model2)
+			model2->Draw(*shader, camera);
+
 
 
         glfwSwapBuffers(window);
