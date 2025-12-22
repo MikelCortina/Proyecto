@@ -11,6 +11,9 @@
 #include "EBO.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Terrain.h"
+#include "Water.h"
+
 
 class App {
 public:
@@ -25,6 +28,8 @@ private:
     void cleanup();
 
     void CreateGeometry();
+
+    GLuint LoadTexture(const std::string& path);
 
     GLFWwindow* window = nullptr;
 
@@ -62,6 +67,16 @@ private:
 	Model* model = nullptr;
 	Model* model2 = nullptr;
     
+    Terrain* terrain = nullptr;
 
     float prevTime = 0.0f;
+
+    GLuint grassTextureID = 0;
+    GLuint rockTextureID = 0;
+	GLuint sandTextureID = 0;
+
+    Water* water = nullptr;
+    Shader* waterShader = nullptr;
+
+
 };
