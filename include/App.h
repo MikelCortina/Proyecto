@@ -64,8 +64,8 @@ private:
 	Mesh* floor = nullptr;
 	Mesh* light = nullptr;
 
-	Model* model = nullptr;
-	Model* model2 = nullptr;
+    Model* crowModel = nullptr;
+	Model* crowOutline = nullptr;
     
     Terrain* terrain = nullptr;
 
@@ -77,6 +77,4 @@ private:
 
     Water* water = nullptr;
     Shader* waterShader = nullptr;
-
-
 };

@@ -28,14 +28,15 @@ Model::Model(const char* file)
 	traverseNode(0);
 }
 
-void Model::Draw(Shader& shader, Camera& camera)
+void Model::Draw(Shader& shader, Camera& camera, const glm::mat4& modelMatrix)
 {
-	// Go over all meshes and draw each one
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::Draw(shader, camera, matricesMeshes[i]);
+		glm::mat4 finalMatrix = modelMatrix * matricesMeshes[i];
+		meshes[i].Draw(shader, camera, finalMatrix);
 	}
 }
+
 
 void Model::loadMesh(unsigned int indMesh)
 {

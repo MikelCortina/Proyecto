@@ -11,6 +11,8 @@ public:
 
     void Draw(GLuint shaderProgram);
 
+    float GetHeight(float worldX, float worldZ) const;
+
 private:
     void loadHeightmap(const std::string& path);
     void generateMesh();

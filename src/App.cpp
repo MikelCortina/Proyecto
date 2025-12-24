@@ -47,6 +47,8 @@ void App::init() {
 
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glClearColor(0.1f, 0.15f, 0.2f, 1.0f); // Fondo azul oscuro para ver mejor si no hay terreno
 
     // ---------- GEOMETRY ----------
@@ -55,9 +57,12 @@ void App::init() {
 }
 
 void App::CreateGeometry() {
+
     // ---------- SHADERS ----------
     shader = new Shader("../shaders/basic.vs", "../shaders/basic.fs");
     grassShader = new Shader("../shaders/terrain.vs", "../shaders/terrain.fs");
+    outliningShader = new Shader("../shaders/outlining.vs", "../shaders/outlining.fs");
+
 
     if (shader->ID == 0) {
         std::cerr << "Error compilando basic shader\n";
@@ -86,6 +91,9 @@ void App::CreateGeometry() {
     if (grassTextureID == 0) std::cerr << "Warning: grass.png no cargó (ID=0)\n";
     if (rockTextureID == 0) std::cerr << "Warning: rock.png no cargó (ID=0)\n";
 
+    crowModel = new Model("../models/crow/scene.gltf");
+	crowOutline = new Model("../models/crow-outline/scene.gltf");
+
     waterShader = new Shader("../shaders/water.vs", "../shaders/water.fs");  // o water.vs si es separado
     water = new Water(0.1f, 2000.0f);  // Nivel del agua a Y=0.5, plano muy grande
 }
@@ -96,7 +104,7 @@ void App::run() {
 
 void App::mainLoop() {
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 5000.0f);
@@ -131,6 +139,48 @@ void App::mainLoop() {
             terrain->Draw(grassShader->ID);
         }
 
+        if (crowModel)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(-50.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+             treePos.y = terrain->GetHeight(treePos.x, treePos.z)-1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+			glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+			glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel->Draw(*shader, camera, model);
+
+			glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+			glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+			glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+            
+            if (crowOutline)
+                crowOutline->Draw(*outliningShader, camera, model1);
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+
         if (water) {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -161,7 +211,16 @@ void App::cleanup() {
 
     if (waterShader) { waterShader->Delete(); delete waterShader; }
     if (water) { delete water; }
-
+    if (crowModel)
+    {
+        delete crowModel;
+        crowModel = nullptr;
+    }
+    if( crowOutline)
+    {
+        delete crowOutline;
+        crowOutline = nullptr;
+	}
     glfwDestroyWindow(window);
     glfwTerminate();
 }

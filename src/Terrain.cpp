@@ -177,3 +177,48 @@ void Terrain::Draw(GLuint shaderProgram) {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+float Terrain::GetHeight(float worldX, float worldZ) const
+{
+    if (vertices.empty())
+        return 0.0f;
+
+    // Convertir coordenadas mundo ? espacio del terreno
+    float terrainWidth = (width - 1) * sizeScale;
+    float terrainHeight = (height - 1) * sizeScale;
+
+    float localX = worldX + terrainWidth * 0.5f;
+    float localZ = worldZ + terrainHeight * 0.5f;
+
+    // Fuera del terreno
+    if (localX < 0.0f || localZ < 0.0f ||
+        localX >= terrainWidth || localZ >= terrainHeight)
+        return 0.0f;
+
+    // Coordenadas en grid
+    float gridX = localX / sizeScale;
+    float gridZ = localZ / sizeScale;
+
+    int x0 = static_cast<int>(floor(gridX));
+    int z0 = static_cast<int>(floor(gridZ));
+    int x1 = x0 + 1;
+    int z1 = z0 + 1;
+
+    if (x1 >= width || z1 >= height)
+        return vertices[z0 * width + x0].y;
+
+    // Alturas de los 4 vértices
+    float h00 = vertices[z0 * width + x0].y;
+    float h10 = vertices[z0 * width + x1].y;
+    float h01 = vertices[z1 * width + x0].y;
+    float h11 = vertices[z1 * width + x1].y;
+
+    // Interpolación bilineal
+    float tx = gridX - x0;
+    float tz = gridZ - z0;
+
+    float h0 = glm::mix(h00, h10, tx);
+    float h1 = glm::mix(h01, h11, tx);
+
+    return glm::mix(h0, h1, tz);
+}
