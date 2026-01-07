@@ -31,6 +31,8 @@ private:
 
     GLuint LoadTexture(const std::string& path);
 
+    GLuint LoadCubemap(std::vector<std::string> faces);
+
     GLFWwindow* window = nullptr;
 
     const unsigned int width = 800;
@@ -77,4 +79,11 @@ private:
 
     Water* water = nullptr;
     Shader* waterShader = nullptr;
+
+private:
+    Shader* skyboxShader;
+    GLuint skyboxVAO, skyboxVBO;
+    GLuint skyboxTextureID;  // el cubemap
+
+   
 };
