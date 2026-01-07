@@ -192,6 +192,34 @@ void App::CreateGeometry() {
     crowModel = new Model("../models/crow/scene.gltf");
 	crowOutline = new Model("../models/crow-outline/scene.gltf");
 
+	crowModel1 = new Model("../models/crow/scene.gltf");
+	crowOutline1 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel2 = new Model("../models/crow/scene.gltf");
+	crowOutline2 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel3 = new Model("../models/crow/scene.gltf");
+	crowOutline3 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel4 = new Model("../models/crow/scene.gltf");
+	crowOutline4 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel5 = new Model("../models/crow/scene.gltf");
+	crowOutline5 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel6 = new Model("../models/crow/scene.gltf");
+	crowOutline6 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel7 = new Model("../models/crow/scene.gltf");
+	crowOutline7 = new Model("../models/crow-outline/scene.gltf");
+
+	crowModel8 = new Model("../models/crow/scene.gltf");
+	crowOutline8 = new Model("../models/crow-outline/scene.gltf");
+
+
+
+	// ---------- AGUA ----------
+
     waterShader = new Shader("../shaders/water.vs", "../shaders/water.fs");  // o water.vs si es separado
     water = new Water(0.1f, 2000.0f);  // Nivel del agua a Y=0.5, plano muy grande
 }
@@ -278,7 +306,321 @@ void App::mainLoop() {
             glStencilFunc(GL_ALWAYS, 0, 0xFF);
             glEnable(GL_DEPTH_TEST);
         }
+        if (crowModel1)
+        {
+            shader->Activate();
 
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(50.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel1->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel2)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(-150.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel2->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+          
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+
+        if (crowModel3)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(150.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel3->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+          
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel4)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(200.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel4->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+         
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel5)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(250.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel5->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+          
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel6)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(400.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel6->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+      
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel7)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(-300.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel7->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+        if (crowModel8)
+        {
+            shader->Activate();
+
+            glUniform4f(glGetUniformLocation(shader->ID, "lightColor"), 1, 1, 1, 1);
+            glUniform3f(glGetUniformLocation(shader->ID, "lightPos"), 5, 10, 5);
+            glUniform3fv(glGetUniformLocation(shader->ID, "camPos"), 1,
+                glm::value_ptr(camera.Position));
+
+            // Posición del árbol en la isla
+            glm::vec3 treePos = glm::vec3(-400.0f, 0.0f, 15.0f);
+
+            // (opcional) ajustar altura al terreno
+            treePos.y = terrain->GetHeight(treePos.x, treePos.z) - 1.0f;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, treePos);
+            model = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF); // Establecer valor del stencil a 1 al dibujar el modelo
+            glStencilMask(0xFF); // Habilitar escritura en el buffer de stencil
+
+            crowModel8->Draw(*shader, camera, model);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0X0FF); // Solo dibujar donde el stencil no es 1  
+            glStencilMask(0x00); // Deshabilitar escritura en el buffer de stencil
+            glDisable(GL_DEPTH_TEST); // Deshabilitar prueba de profundidad para el contorno
+            outliningShader->Activate();
+            glUniform1f(glGetUniformLocation(outliningShader->ID, "outlining"), 1.08f);
+
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::translate(model, treePos);
+            model1 = glm::scale(model, glm::vec3(1.0f)); // tamaño
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
         if (water) {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -352,6 +694,77 @@ void App::cleanup() {
         delete crowOutline;
         crowOutline = nullptr;
 	}
+    if (crowModel1)
+    {
+        delete crowModel1;
+        crowModel1 = nullptr;
+	}
+    if (crowOutline1)
+    {
+        delete crowOutline1;
+        crowOutline1 = nullptr;
+	}
+    if (crowModel2)
+    {
+        delete crowModel2;
+		crowModel2 = nullptr;
+
+	}
+    if (crowOutline2)
+    {
+        delete crowOutline2;
+		crowOutline2 = nullptr;
+	}
+    if (crowModel3)
+    {
+        delete crowModel3;
+    }
+    if (crowOutline3)
+    {
+        delete crowOutline3;
+	}
+    if (crowModel4)
+    {
+        delete crowModel4;
+	}
+    if (crowOutline4)
+    {
+        delete crowOutline4;
+    }
+    if (crowModel5)
+    {
+        delete crowModel5;
+    }
+    if (crowOutline5)
+    {
+        delete crowOutline5;
+	}
+    if (crowModel6)
+    {
+        delete crowModel6;
+    }
+    if (crowOutline6)
+    {
+        delete crowOutline6;
+    }
+    if (crowModel7)
+    {
+        delete crowModel7;
+	}
+    if (crowOutline7)
+    {
+        delete crowOutline7;
+    }
+
+    if (crowModel8)
+    {
+        delete crowModel8;
+	}
+    if (crowOutline8)
+    {
+        delete crowOutline8;
+	}
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }

@@ -68,7 +68,26 @@ private:
 
     Model* crowModel = nullptr;
 	Model* crowOutline = nullptr;
-    
+    Model* crowModel1 = nullptr;
+    Model* crowOutline1 = nullptr;
+    Model* crowModel2 = nullptr;
+    Model* crowOutline2 = nullptr;
+    Model* crowModel3 = nullptr;
+    Model* crowOutline3 = nullptr;
+    Model* crowModel4 = nullptr;
+    Model* crowOutline4 = nullptr;
+    Model* crowModel5 = nullptr;
+    Model* crowOutline5 = nullptr;
+    Model* crowModel6 = nullptr;
+    Model* crowOutline6 = nullptr;
+    Model* crowModel7 = nullptr;
+    Model* crowOutline7 = nullptr;
+    Model* crowModel8 = nullptr;
+    Model* crowOutline8 = nullptr;
+
+
+
+
     Terrain* terrain = nullptr;
 
     float prevTime = 0.0f;
